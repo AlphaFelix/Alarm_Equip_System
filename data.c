@@ -1,7 +1,7 @@
 #include "data.h"
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 //Variable responsible for maintaining the state of the machine
@@ -18,9 +18,6 @@ int event = -1;
 //A Flag to indicate reorganization in the alarm vector struct 
 bool change = false;
 
-char description[256];
-unsigned int TON[3];
-
 struct tm *locTime;
 time_t secs;
 
@@ -32,27 +29,53 @@ alarm sortTON[256];
 
 bool alarmFlag[256];
 
-void dataInit(void){    
-    for(int i=0; i<256; i++) {
-        strcpy(equipamentos[i].name, "NULL");
-        strcpy(equipamentos[i].numSerial, "NULL");
-        equipamentos[i].type = 0;
-        equipamentos[i].equipDate.day = 0;
-        equipamentos[i].equipDate.month = 0;
-        equipamentos[i].equipDate.year = 0;
+//Read the data from the database or initialize the data with NULL if the txt does not exist
+void dataInit(void){  
+    FILE *database;   
+    //Open or create file
+    database = fopen("data.txt", "a+");  
+    if (database == NULL)
+    {
+        printf("ERRO! O arquivo não foi aberto!\n");
+        for(int i=0; i<256; i++) {
+            strcpy(equipamentos[i].name, "NULL");
+            strcpy(equipamentos[i].numSerial, "NULL");
+            equipamentos[i].type = 0;
+            equipamentos[i].equipDate.day = 0;
+            equipamentos[i].equipDate.month = 0;
+            equipamentos[i].equipDate.year = 0;
 
-        strcpy(alarmes[i].description, "NULL");
-        alarmes[i].classification = 0;
-        alarmes->associated = NULL; 
-        alarmes[i].set = false;  
-        alarmes[i].state = true; 
-        alarmes[i].timesOn = 0;
+            strcpy(alarmes[i].description, "NULL");
+            alarmes[i].classification = 0;
+            alarmes->associated = NULL;
+            alarmes[i].state = true; 
+            alarmes[i].timesOn = 0;
 
-        alarmFlag[i] = false;
-        
-        //strcpy(description[i], "NULL"); 
-        TON[i] = 0;
+            alarmFlag[i] = false;
+
+            //Test only 
+            alarmes[i].set = false;                      
+        }
     }
+    else
+    {
+        fscanf(database, "%d_%d", &x,&z);        
+        for(int i = 0; i<=x;i++){
+            fscanf(database, "%s %s %d_%d/%d/%d\n", &equipamentos[i].name, &equipamentos[i].numSerial, &equipamentos[i].type, &equipamentos[i].equipDate.day, &equipamentos[i].equipDate.month, &equipamentos[i].equipDate.year);
+        }
+        for(int j = 0; j<=z;j++){
+            int index = 0;
+            fscanf(database, "%s\n%d_%d/%d/%d_%d/%d/%d_%d/%d/%d_%d_%d_%d_%d_%d\n", &alarmes[j].description, &alarmes[j].classification,&alarmes[j].alarmDate.day,&alarmes[j].alarmDate.month,&alarmes[j].alarmDate.year,&alarmes[j].dateOn.day,&alarmes[j].dateOn.month,&alarmes[j].dateOn.year,&alarmes[j].dateOff.day,&alarmes[j].dateOff.month,&alarmes[j].dateOff.year,&alarmes[j].set,&alarmes[j].state,&alarmes[j].timesOn,&alarmFlag[j],&index);    
+            if(index<256)
+            {
+                alarmes[j].associated = &equipamentos[index];
+            }
+        }
+        printf("O arquivo foi aberto com sucesso!");        
+    }
+    //Close the file
+    fclose(database);
+    
 }
 
 //Equipment------------------------------------------------------------------------------------------------
@@ -76,6 +99,7 @@ void setEquipType(int i, unsigned short int type){
     equipamentos[i].type = type % 4;      
 }
 
+//Return the type of the equipment as a string
 const char* getEquipType(int i){
     const char *temp;
     switch(equipamentos[i].type){
@@ -98,6 +122,7 @@ const char* getEquipType(int i){
     return temp;         
 }
 
+//Save the date of the computer in the equipment registe date
 void setEquipLocalTime(int i){
     time(&secs);
     locTime = localtime(&secs);
@@ -106,6 +131,7 @@ void setEquipLocalTime(int i){
     equipamentos[i].equipDate.year = locTime->tm_year+1900;   
 }
 
+//Save the date using the int DDMMYYYY
 char setEquipDate(int i, unsigned int date){   
     equipamentos[i].equipDate.day = date/1000000;    
     equipamentos[i].equipDate.month = (date/10000)%100;     
@@ -128,6 +154,7 @@ unsigned int getEquipYear(int i){
     return equipamentos[i].equipDate.year;       
 }
 
+//Replace the deleted values with the following values
 void deleteEquip(int i){    
     for(int y=i; y<=x; y++) {
         strcpy(equipamentos[y].name, equipamentos[y+1].name);
@@ -139,6 +166,7 @@ void deleteEquip(int i){
     }
 }
 
+//It counts the quantity of equipments registered
 int getI(void){
     return x;
 }
@@ -185,6 +213,7 @@ const char* getAlarmClassification(int i){
     return temp;         
 }
 
+//Save the date of the computer
 void setAlarmLocalTime(int i){
     time(&secs);
     locTime = localtime(&secs);
@@ -193,6 +222,7 @@ void setAlarmLocalTime(int i){
     alarmes[i].alarmDate.year = locTime->tm_year+1900;   
 }
 
+//Save the date of the computer
 void setAlarmDateIn(int i){
     time(&secs);
     locTime = localtime(&secs);
@@ -201,6 +231,7 @@ void setAlarmDateIn(int i){
     alarmes[i].dateOn.year = locTime->tm_year+1900;   
 }
 
+//Save the date of the computer
 void setAlarmDateOut(int i){
     time(&secs);
     locTime = localtime(&secs);
@@ -323,12 +354,14 @@ void checkAlarm(void){
     }
 }
 
+//Basic comparison function used in qsort
 int cmpAlarmTON(const void * a, const void * b){
     alarm *alarmA = (alarm *)a;
     alarm *alarmB = (alarm *)b;
     return (alarmB->timesOn-alarmA->timesOn);
 }
 
+//Sort the structure in descending timesOn order 
 void alarmMaxTON(void){            
     for(int i =0; i<=z;i++){
         sortTON[i].timesOn = alarmes[i].timesOn;
@@ -337,6 +370,7 @@ void alarmMaxTON(void){
     qsort(sortTON,z+1,sizeof(alarm),cmpAlarmTON);     
 }
 
+//Select the value of the vector sorted according to the number of times it was triggered 
 unsigned int getMaxTON(int i){     
     return sortTON[i].timesOn;  
 }
@@ -345,6 +379,7 @@ char* getDescriptionTON(int i){
     return sortTON[i].description;  
 }
 
+//Basic comparison function used in qsort
 int cmpAlarmDescription(const void * a, const void * b){
     alarm *alarmA = (alarm *)a;
     alarm *alarmB = (alarm *)b;   
@@ -355,17 +390,20 @@ int cmpAlarmDescription(const void * a, const void * b){
     return 0;
 }
 
+//Sort the structure in alphabetical order of description
 void sortAlarmDescription(void){  
     change = true; 
     qsort(alarmes,z+1,sizeof(alarm),cmpAlarmDescription);
 }
 
+//Basic comparison function used in qsort
 int cmpAlarmClassification(const void * a, const void * b){
     alarm *alarmA = (alarm *)a;
     alarm *alarmB = (alarm *)b;
     return (alarmA->classification-alarmB->classification);    
 }
 
+//Sort the structure in alphabetical order of classification
 void sortAlarmClassification(void){  
     change = true; 
     qsort(alarmes,z+1,sizeof(alarm),cmpAlarmClassification);
@@ -399,4 +437,34 @@ void setEv(int ev){
 
 int getEv(void){
     return event;
+}
+
+//Save the equipments and alarms to the txt database
+void saveData(void){
+    FILE *database;      
+    //Open or create file
+    database = fopen("./data.txt", "w");  
+    if (database == NULL)
+    {
+        printf("ERRO! O arquivo nao foi aberto!\n");
+    }
+    else 
+    {   
+        fprintf(database, "%d_%d\n",x,z);
+        for(int i=0; i<=x; i++){
+            if(fprintf(database, "%s\n%s\n%d_%d/%d/%d\n", equipamentos[i].name, equipamentos[i].numSerial,equipamentos[i].type, equipamentos[i].equipDate.day, equipamentos[i].equipDate.month, equipamentos[i].equipDate.year)<0)         
+                printf("ERRO! Ao gravar o arquivo!\n");  
+        } 
+        for(int j=0; j<=z; j++){
+            if(fprintf(database, "%s\n%d_%d/%d/%d_%d/%d/%d_%d/%d/%d_%d_%d_%d_%d_%d\n", alarmes[j].description,
+                alarmes[j].classification,
+                alarmes[j].alarmDate.day, alarmes[j].alarmDate.month, alarmes[j].alarmDate.year,
+                alarmes[j].dateOn.day, alarmes[j].dateOn.month, alarmes[j].dateOn.year,
+                alarmes[j].dateOff.day, alarmes[j].dateOff.month, alarmes[j].dateOff.year,
+                alarmes[j].set, alarmes[j].state, alarmes[j].timesOn,alarmFlag[j],(alarmes[j].associated-equipamentos))<0)         
+                printf("ERRO! Ao gravar o arquivo!\n");
+        }                 
+    }     
+    //Close the file
+    fclose(database);    
 }

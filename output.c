@@ -3,19 +3,17 @@
 #include "stateMachine.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <bits/stdc++.h> 
 
 #define NUM_IDIOMS 1
 
 //System menu
 const char* msgs[STATE_END][NUM_IDIOMS] = {
     {"Sistema de Alarmes\n Digite o numero do produto que deseja trabalhar e aperte enter: \n 1. Equipamentos\n 2. Alarmes\n "},
-    {"Menu de Equipamentos\n Digite o numero da funcionalidade que deseja : \n 1. Cadastrar\n 2. Ler\n 3. Modificar\n 4. Deletar\n "},
+    {"Menu de Equipamentos\n Digite o numero da funcionalidade que deseja : \n 0. voltar \n 1. Cadastrar\n 2. Ler e Modificar \n 3. Deletar\n "},
     {"Cadastro de Equipamentos : \n 0. voltar\n Digite o nome do equipamento : "},
     {" Digite o numero de serie do equipamento : "},
     {" Escolha um tipo : \n 1. Tensao\n 2. Corrente\n 3. Oleo\n "},
-    {" Data de cadastro : \n Digite 1 para data local ou digite a data no formato DDMMAAAA : "},
-    {"Equipamentos cadastrados : \n 0. voltar\n"},
+    {" Data de cadastro : \n Digite 1 para data local ou digite a data no formato DDMMAAAA : "},    
     {"Modificar Equipamentos : \n Digite o numero do equipamento que deseja modificar :  \n 0. voltar \n"},
     {" 0. voltar \n 1. Nome\n 2. Numero de serie\n 3. Tipo\n 4. Data\n Digite o numero do que deseja alterar : "},
     {"Modificar Equipamento : \n 0. voltar\n Digite o novo nome do equipamento : "},
@@ -24,7 +22,7 @@ const char* msgs[STATE_END][NUM_IDIOMS] = {
     {"Modificar Equipamento : \n Digite a nova data no formato DDMMAAAA : "},
     {"Deletar Equipamento : \n 0. voltar\n"},
     {"Tem certeza que deseja deletar ? 1(sim)/0(nao)\n"},
-    {"Menu de Alarmes\n Digite o numero da funcionalidade que deseja : \n 1. Cadastrar\n 2. Ler e Modificar\n 3. Deletar\n "},
+    {"Menu de Alarmes\n Digite o numero da funcionalidade que deseja : \n 0. voltar \n 1. Cadastrar\n 2. Ler e Modificar\n 3. Deletar\n "},
     {"Cadastro de Alarmes \n 0. voltar\n Digite a descricao do alarme : "},
     {" Escolha uma classificacao : \n 1. Baixo\n 2. Medio\n 3. Alto\n "},
     {" Escolha o equipamento relacionado : \n 0. voltar\n 1. Nenhum\n"},

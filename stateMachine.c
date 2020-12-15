@@ -36,18 +36,13 @@ void smLoop(void){
             if (event == 1){
                 setState(STATE_REGISTER_EQUIPMENT_NAME);                
                 displayInit();                                                
-            } 
+            }             
             if(event == 2){
-                setState(STATE_EQUIPMENT_READ);
-                displayInit(); 
-                printRead(0);
-            }
-            if(event == 3){
                 setState(STATE_EQUIPMENT_UPDATE);
                 displayInit(); 
                 printRead(0);
             }
-            if(event == 4){
+            if(event == 3){
                 setState(STATE_EQUIPMENT_DELETE);
                 displayInit(); 
                 printRead(0);
@@ -108,14 +103,14 @@ void smLoop(void){
             } 
             if(event==1){
                 setEquipLocalTime(getI()+1);
-                setState(STATE_EQUIPMENT_READ);
+                setState(STATE_EQUIPMENT_UPDATE);
                 addI();
                 displayInit(); 
                 printRead(0);
             }
             if (event > 1){  
                 if(setEquipDate(getI()+1, event)>0){
-                    setState(STATE_EQUIPMENT_READ);
+                    setState(STATE_EQUIPMENT_UPDATE);
                     addI();
                     displayInit(); 
                     printRead(0);
@@ -125,14 +120,7 @@ void smLoop(void){
                     printf(" Digite novamente : "); 
                 }
             }                               
-            break;
-        
-        case STATE_EQUIPMENT_READ:            
-            if(event == 0){
-                setState(STATE_EQUIPMENT_MENU);
-                displayInit();
-            }         
-            break;
+            break;       
 
         case STATE_EQUIPMENT_UPDATE:            
             if(event == 0){

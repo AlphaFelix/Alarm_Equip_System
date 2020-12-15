@@ -34,7 +34,10 @@ typedef struct{
     unsigned int timesOn;   
 } alarm;
 
+//Database
 void dataInit(void);
+void saveData(void);
+
 //Equipment functions
 void setEquipName(int i, char* name);
 char* getEquipName(int i);
@@ -95,7 +98,6 @@ unsigned int getMaxTON(int i);
 char* getDescriptionTON(int i);
 int cmpAlarmTON(const void * a, const void * b);
 unsigned int getAlarmTimesOn(int i);
-
 
 void setAlarmState(int i);
 bool getAlarmState(int i);

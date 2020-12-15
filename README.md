@@ -11,10 +11,10 @@ g++ main.c data.c input.c output.c stateMachine.c -o main
 - [X] Alarm registration (CRUD);
 - [X] Manipulation of alarms and equipments;
 - [X] Console interface;
-- [ ] All system data saved in a txt;
+- [X] All system data saved in a txt;
 
 ## Libraries
-The system is divided into multiple libraries, each on is responsible for a part of the code. In the main the code is in an infinite loop.
+The system is divided into multiple libraries, each responsible for a part of the code. In the main.c, the code is in an infinite loop.
 
 ### data.h 
 Library in charge of creating the txt database and manipulating system data.
@@ -32,7 +32,7 @@ Library in charge of creating and controlling the state machine
 * Substitution of the conio.h Library;
 * Asynchronous keyboard input;
 * Terminal refresh following changes in variables;
-* Optimization of the menus and states;
+* Optimization of the menus, states and database;
 * Use of buffers to adequate the variables to the size of the strings;
 * Restrict the input to only accept the precise types; 
 * Graphical user interface;
