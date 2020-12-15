@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <conio.h>
 
-struct termios orig_termios;
-
 //Function to read only after enter (Not ideal)
 int readKey(char *word){
     int num;    
