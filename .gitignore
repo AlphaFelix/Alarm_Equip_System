@@ -1,6 +1,12 @@
 # Prerequisites
 *.d
 
+# Json
+*.json
+
+#Database
+*.txt
+
 # Object files
 *.o
 *.ko
