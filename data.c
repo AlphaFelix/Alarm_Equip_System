@@ -1,4 +1,5 @@
 #include "data.h"
+#include "output.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -340,11 +341,13 @@ void checkAlarm(void){
         {
             if(temp==true && alarmFlag[i]!=temp){
             setAlarmDateIn(i); 
+            displayInit();
             printf("\n Alarme %s Acionado/ON\n", getAlarmDescription(i)); 
             alarmes[i].timesOn++;                      
             }
             else if(temp==false && alarmFlag[i]!=temp){
                 setAlarmDateOut(i);
+                displayInit();
                 printf("\n Alarme %s Desacionado/OFF\n", getAlarmDescription(i));
             }
         }

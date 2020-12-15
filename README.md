@@ -1,11 +1,46 @@
 # Alarm_System
 System for registering and handling alarms and equipment.
 
-To run, compile the main with the others .c archives and execute the main.exe.
+To run on windows, compile the main with the others .c archives and execute the main.exe.
 ```c
 g++ main.c data.c input.c output.c stateMachine.c -o main
 ./main
 ```
+To work on Linux, it is necessary to create the kbhit() function. (Not tested)
+```c
+#include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
+#include <fcntl.h>
+ 
+int kbhit(void)
+{
+  struct termios oldt, newt;
+  int ch;
+  int oldf;
+ 
+  tcgetattr(STDIN_FILENO, &oldt);
+  newt = oldt;
+  newt.c_lflag &= ~(ICANON | ECHO);
+  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+  oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+  fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+ 
+  ch = getchar();
+ 
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+  fcntl(STDIN_FILENO, F_SETFL, oldf);
+ 
+  if(ch != EOF)
+  {
+    ungetc(ch, stdin);
+    return 1;
+  }
+ 
+  return 0;
+}
+```
+
 ## Application itens
 - [X] Equipment registration (CRUD);
 - [X] Alarm registration (CRUD);
